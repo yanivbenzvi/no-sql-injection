@@ -1,0 +1,15 @@
+# --- Vagrant --- #
+
+# General
+.vagrant/
+
+# Log files
+*.log
+
+# --- Node.js --- #
+
+# Dependency directories
+node_modules/
+
+# Logs
+npm-debug.log*
