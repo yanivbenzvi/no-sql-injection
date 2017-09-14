@@ -1,4 +1,4 @@
-# Update packaged
+# Update packages
 sudo apt-get update
 
 # Install Node.js and NPM
@@ -11,5 +11,5 @@ echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb
 sudo apt-get update
 sudo apt-get install -y mongodb-org
 
-# Start the Mongo service
-sudo service mongod start
+# Enable the Mongo service so that it automatically starts every time you start the machine
+systemctl enable mongod.service
