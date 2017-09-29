@@ -11,5 +11,6 @@ echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb
 sudo apt-get update
 sudo apt-get install -y mongodb-org
 
-# Enable the Mongo service so that it automatically starts every time you start the machine
-systemctl enable mongod.service
+# Start and enable the Mongo service so that it automatically starts every time you start the machine
+sudo systemctl start mongod.service
+sudo systemctl enable mongod.service
