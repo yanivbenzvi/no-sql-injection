@@ -1,8 +1,9 @@
+#!/usr/bin/env bash
 # Update packages
 sudo apt-get update
 
 # Install Node.js and NPM
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Install npm@5.7.1
@@ -16,5 +17,7 @@ sudo apt-get update
 sudo apt-get install -y mongodb-org
 
 # Start and enable the Mongo service so that it automatically starts every time you start the machine
+sudo mkdir -p /data/db
+sudo mongod --bind_ip localhost,192.168.44.15
 sudo systemctl start mongod.service
 sudo systemctl enable mongod.service
