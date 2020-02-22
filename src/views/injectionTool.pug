@@ -1,0 +1,25 @@
+extends layout.pug
+  
+block content
+  h1= "injection lookup"
+
+  p= "search for No-sql Injection in url."
+  form(method="get", class="form-inline")
+    .form-group(class="mb-2")
+      label(for="lookup", class="sr-only") Username Search
+      input(type="text", name="url_lookup", style="margin-left:150px;width:800px;")
+    button(type="submit", id="login_submit", class="btn btn-dark", style="margin-left:15px") Search User
+
+  table(class="table")
+    thead
+      tr
+        th(scope="col") parameter
+        th(scope="col") injection vula (yes/no)
+        th(scope="col") diffrenci
+    tbody
+      - if (result !== undefined)
+        - for (var i=0; i < result.length; i++)
+          tr
+            td #{result[i].paramName}
+            td #{result[i].isVula}
+            td #{result[i].precent}

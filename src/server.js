@@ -1,93 +1,43 @@
-const User     = require('./models/user')
-const express  = require('express')
-const mongoose = require('mongoose')
-const app      = express()
 
-mongoose.connect('mongodb://192.168.44.15:27017/myapp', {useNewUrlParser: true})
+const express = require('express'),
+	path = require('path'),
+	bodyParser = require('body-parser'),
+	cors = require('cors'),
+	mongoose = require('mongoose'),
+	config = require('./db');
 
-mongoose.connection.on('connected', () => {
-    console.log('Database connected')
-})
+const userRoute = require('./routes/user.route');
+const defaultRoute = require('./routes/default.route');
 
-mongoose.connection.on('error', error => {
-    console.log('Database connection failed')
-    console.log(error)
-})
+mongoose.Promise = global.Promise;
+mongoose.connect(config.DB, { useNewUrlParser: true}).then(
+	() => {console.log('Database is connected')},
+	err => {console.log('DB error: ' + err)}
+);
 
-app.get('/', (req, res) => {
-    let data = '<p>Hello Vagrant!</p>'
-    if (mongoose.connection.readyState) {
-        func1()
-        data += '<p>Connected to MongoDB</p>'
+const app = express();
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+app.use(express.static('static'));
+app.set('view engine', 'pug')
+
+var whitelist = ['http://localhost:4200', 'http://localhost:4000']
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
     } else {
-        data += '<p>Not connected to MongoDB :(</p>'
+      callback(new Error('Not allowed by CORS'))
     }
-    res.send(data)
-})
-
-
-app.get('/find', (req, res) => {
-    console.log('trying to find users')
-    func2()
-    const data  = '<p>User list is in the ' + req.query.id + ' console</p>'
-    res.send(data)
-})
-
-app.listen('3000', () => {
-    console.log('Listening on port 3000')
-})
-
-
-func1 = () => {
-    console.log('mongodb func1')
-    var Schema = mongoose.Schema
-
-    // create a schema
-    var userSchema = new Schema({
-        name:       String,
-        username:   {type: String, required: true, unique: true},
-        password:   {type: String, required: true},
-        admin:      Boolean,
-        location:   String,
-        meta:       {
-            age:     Number,
-            website: String,
-        },
-        created_at: Date,
-        updated_at: Date,
-    })
-
-    // the schema is useless so far
-    // we need to create a model using it
-    var User = mongoose.model('User', userSchema)
-
-    var newUser = User({
-        name:     'Peter Quill',
-        username: 'starlord55' + Math.random().toString(36).substr(2, 5),
-        password: 'password',
-        admin:    true,
-    })
-
-    // save the user
-    newUser.save(function (err) {
-        if (err) {
-            throw err
-        }
-
-        console.log('User created!')
-    })
-
+  }
 }
 
-func2 = () => {
-    var User = mongoose.model('User')
+app.use(cors(corsOptions));
+app.use('/user', userRoute);
+app.use('/', defaultRoute);
 
-    User.find({}, function (err, users) {
-        if (err) {
-            throw err
-        }
+let port = process.env.PORT || 4000;
 
-        // object of all the users
-        console.log(users)
-    })
-}
+const server = app.listen(port, function() {
+	console.log('Listening on port ' + port);
+});
